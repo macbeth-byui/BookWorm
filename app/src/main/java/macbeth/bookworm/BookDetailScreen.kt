@@ -35,6 +35,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.text.font.FontWeight
 
 // Displays a single book and allows the user to modify (or delete) the contents of that book.
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,14 +76,34 @@ fun BookDetailScreen(nav : NavController, bookId : Int) {
             deleteImageFile(context, newPicture)
         }
     }
+    val topBarTitle = if (bookId == BOOK_ID_NEW) {
+        "New Book"
+    } else {
+        "Update Book"
+    }
 
-    Scaffold { surfacePadding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                ),
+                title = {
+                    Text(
+                        topBarTitle,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+            )
+        },
+    ) { surfacePadding ->
         // Surface takes a default modifier, applies the padding
         // in all four directions around any app boars on top or
         // bottom from the Scaffold, and the fills the screen.
         Surface(
             color = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.padding(surfacePadding).fillMaxSize()
+            modifier = Modifier.padding(surfacePadding).fillMaxSize(),
         ) {
             Column (
                 modifier = Modifier.fillMaxSize()
