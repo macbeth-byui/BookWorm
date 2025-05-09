@@ -55,10 +55,10 @@ fun AppControl(viewModel: MainViewModel) {
                     navArgument(NAV_PARAM_BOOK_ID) { type = NavType.IntType }
                 )) { backStackEntry ->
                 val bookId = backStackEntry.arguments?.getInt(NAV_PARAM_BOOK_ID) ?: BOOK_ID_INVALID
-                BookDetailScreen(nav, bookId)
+                BookDetailScreen(nav, bookId, viewModel)
             }
             composable(NAV_ADD_BOOK) {
-                BookDetailScreen(nav, BOOK_ID_NEW)
+                BookDetailScreen(nav, BOOK_ID_NEW, viewModel)
             }
         }
     }

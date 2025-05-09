@@ -71,9 +71,9 @@ fun BookListScreen(nav : NavController, viewModel: MainViewModel) {
                     }
                 },
                 actions = {
-                    MusicIcon(viewModel.player)
+                    MusicIcon(viewModel.player.value)
                     FilterIcon(filter) { filter = it }
-                    ColorIcon(viewModel.color) { viewModel.color = it }
+                    ColorIcon(viewModel.color.value) { viewModel.color.value = it }
                 }
             )
         },

@@ -9,9 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.google.common.util.concurrent.MoreExecutors
 import macbeth.bookworm.ui.theme.BookWormTheme
@@ -26,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         viewModel = MainViewModel(getColor(this))
         setContent {
-            val color = viewModel.color
+            val color = viewModel.color.value
             BookWormTheme(color = color) {
                 AppControl(viewModel)
             }
@@ -41,7 +40,7 @@ class MainActivity : ComponentActivity() {
             {
                 mediaController = controllerFuture.get()
                 // Put the player in the viewModel which will trigger the UI to redraw
-                viewModel.player = mediaController
+                viewModel.player.value = mediaController
             },
             MoreExecutors.directExecutor()
         )
@@ -57,7 +56,8 @@ class MainActivity : ComponentActivity() {
 
 // Store data that can be communicated with the UI
 class MainViewModel(requestedColor : ColorScheme) : ViewModel() {
-    var player by mutableStateOf<Player?>(null)
-    var color by mutableStateOf(requestedColor)
+    var player = mutableStateOf<Player?>(null)
+    var color = mutableStateOf(requestedColor)
+    val tempPictures = mutableStateListOf<String>()
 }
 

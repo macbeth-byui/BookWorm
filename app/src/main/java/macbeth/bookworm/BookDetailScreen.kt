@@ -24,7 +24,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -42,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 // Displays a single book and allows the user to modify (or delete) the contents of that book.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BookDetailScreen(nav : NavController, bookId : Int) {
+fun BookDetailScreen(nav : NavController, bookId : Int, viewModel: MainViewModel) {
     val context = LocalContext.current
 
     // Only read the books once
@@ -62,14 +61,13 @@ fun BookDetailScreen(nav : NavController, bookId : Int) {
     var pages by remember { mutableIntStateOf(book.pages) }
     var picture by remember { mutableStateOf(book.picture) }
     var newPicture by remember { mutableStateOf("") }
-    var oldPictures = remember { mutableStateListOf<String>() }
     val takePictureLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
         // Respond the success or failure of the camera result
         if (success) {
             if (!picture.isEmpty()) {
-                oldPictures.add(picture)
+                viewModel.tempPictures.add(picture)
             }
             picture = newPicture
         } else {
@@ -265,7 +263,8 @@ fun BookDetailScreen(nav : NavController, bookId : Int) {
                             disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = {
-                            deleteMultipleImageFiles(context, oldPictures)
+                            deleteMultipleImageFiles(context, viewModel.tempPictures)
+                            viewModel.tempPictures.clear()
                             book.title = title
                             book.author = author
                             book.edition = edition
@@ -297,7 +296,8 @@ fun BookDetailScreen(nav : NavController, bookId : Int) {
                             disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = {
-                            deleteMultipleImageFiles(context, oldPictures)
+                            deleteMultipleImageFiles(context, viewModel.tempPictures)
+                            viewModel.tempPictures.clear()
                             deleteImageFile(context, picture)
                             var newBooks = books.toMutableList()
                             if (bookId != BOOK_ID_NEW) {
@@ -320,7 +320,8 @@ fun BookDetailScreen(nav : NavController, bookId : Int) {
                             disabledContainerColor = MaterialTheme.colorScheme.onPrimary,
                         ),
                         onClick = {
-                            deleteMultipleImageFiles(context, oldPictures.slice(1..(oldPictures.size-1)))
+                            deleteMultipleImageFiles(context, viewModel.tempPictures.slice(1..(viewModel.tempPictures.size-1)))
+                            viewModel.tempPictures.clear()
                             deleteImageFile(context, newPicture)
                             nav.navigate(NAV_LIST_BOOKS)
                         },
